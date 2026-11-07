@@ -150,6 +150,25 @@ fr = an.fields[0]         # fr.call, fr.chas, fr.feats.V, fr.feats.ok, fr.W
 all_figures(an, "results/")
 ```
 
+## Agent use
+
+`.claude/skills/sbs-qc/SKILL.md` is a Claude Code skill: when to run the tool,
+the exact command, how to read `stats.json`, which settings are frozen so cycles
+stay comparable, and which follow-up analyses are fair game. Claude Code picks
+it up automatically inside this repo. To have it in every project, link it into
+the personal skills directory:
+
+```bash
+ln -s "$(pwd)/.claude/skills/sbs-qc" ~/.claude/skills/sbs-qc
+```
+
+Or point the acquisition repo's `CLAUDE.md` at it with one line:
+`Sequencing QC: read <path-to-sbs-qc>/.claude/skills/sbs-qc/SKILL.md before
+running or interpreting base-separability QC.`
+
+The report is still what people open; the agent runs the CLI and answers the
+follow-up questions.
+
 ## Results from the 2026-11-03 fields
 
 Tool output at default settings (`sbs-qc analyze manual_64 manual_65 manual_66`).
