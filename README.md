@@ -47,9 +47,30 @@ Options and defaults:
 | `--labels` | file stems | field labels for figures and stats |
 | `--themes` | light,dark | chart renders (image panels are theme-independent) |
 | `--no-registration` | | skip the channel-shift check |
-| `--no-figures` | | stats and matrix only |
+| `--no-figures` | | stats and matrix only (also skips the report) |
+| `--no-report` | | figures but no `report.html` |
+| `--title`, `--notes` | | report title; a text file of hand-written interpretation (paragraphs, `- ` bullets) |
+
+## Report
+
+`analyze` ends by writing `report.html`: a single self-contained page (figures
+inlined as data URIs, light and dark themes) with the verdict, headline numbers,
+automatic checks (within-pair contrast, saturation, registration, no-call rate,
+cross-pair leak), your notes if given, every figure with captions, the signature
+matrix, per-field and per-base tables, and the method with the parameters used.
+Open it in a browser or send it as one file.
+
+To rebuild the report from an existing output directory, or change its form:
+
+```bash
+sbs-qc report results/ --title "Cycle 3" --notes notes.txt
+sbs-qc report results/ --link-figures     # reference the PNGs instead of inlining
+sbs-qc report results/ --fragment         # body only, for embedding (e.g. a claude.ai artifact)
+```
 
 ## Outputs
+
+`report.html` — see above.
 
 `stats.json` — everything numeric: the signature matrix, contrast ratios, angles
 between signatures, and per field: block count, foreground fraction, saturated
@@ -170,4 +191,5 @@ PYTHONPATH=. pytest
 
 Synthetic fields with disc colonies of known signature matrix check matrix
 recovery (within 0.08), call accuracy (above 97% on uniform blocks), pass rate,
-OME channel mapping, registration, and the CLI end to end.
+OME channel mapping, registration, the CLI end to end, and the report (structure,
+inlined figures, notes, fragment and linked-figure modes).

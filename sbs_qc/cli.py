@@ -41,8 +41,23 @@ def main(argv=None) -> int:
     a.add_argument("--red-lo", type=float, default=None, help="red-pair fraction below which a block can seed T or G")
     a.add_argument("--no-registration", action="store_true")
     a.add_argument("--no-figures", action="store_true")
+    a.add_argument("--no-report", action="store_true", help="skip report.html")
+    a.add_argument("--title", default="SBS base separability", help="report title")
+    a.add_argument("--notes", help="text file of hand-written interpretation to include in the report (paragraphs, '- ' bullets)")
     a.add_argument("--themes", default="light,dark")
+    r = sub.add_parser("report", help="rebuild report.html from an existing output directory")
+    r.add_argument("out", help="directory with stats.json and figures")
+    r.add_argument("--title", default="SBS base separability")
+    r.add_argument("--notes")
+    r.add_argument("--link-figures", action="store_true", help="reference the PNG files instead of inlining them")
+    r.add_argument("--fragment", action="store_true", help="emit a body fragment (no html/head/body) for embedding")
     args = ap.parse_args(argv)
+
+    if args.cmd == "report":
+        from .report import write_report
+        path = write_report(args.out, args.title, args.notes, inline=not args.link_figures, fragment=args.fragment)
+        print(f"wrote {path}")
+        return 0
 
     os.makedirs(args.out, exist_ok=True)
     stacks = [load_ome(f, args.channels) for f in args.files]
@@ -59,8 +74,12 @@ def main(argv=None) -> int:
     if not args.no_figures:
         from .figures import all_figures
         all_figures(an, args.out, tuple(t.strip() for t in args.themes.split(",") if t.strip()))
+    report = None
+    if not args.no_figures and not args.no_report:
+        from .report import write_report
+        report = write_report(args.out, args.title, args.notes)
     print(_summary(an))
-    print(f"\nwrote {args.out}/stats.json, matrix.csv" + ("" if args.no_figures else ", figures"))
+    print(f"\nwrote {args.out}/stats.json, matrix.csv" + ("" if args.no_figures else ", figures") + (f", {os.path.basename(report)}" if report else ""))
     return 0
 
 
