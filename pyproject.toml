@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sbs-qc"
+version = "0.1.0"
+description = "Base-separability QC for sequencing-by-synthesis in situ images: dye signature matrix, unmixing, chastity, call maps"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "scikit-image>=0.21",
+  "tifffile>=2023.7",
+  "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+sbs-qc = "sbs_qc.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sbs_qc*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
